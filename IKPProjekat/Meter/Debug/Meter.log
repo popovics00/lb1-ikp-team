@@ -1,0 +1,3 @@
+﻿  main.c
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Meter\main.c(46,7): warning C4013: 'gets' undefined; assuming extern returning int
+  Meter.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\Meter.exe

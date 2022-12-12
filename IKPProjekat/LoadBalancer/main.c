@@ -1,12 +1,20 @@
 #pragma warning( disable : 4996)
+#define WIN32_LEAN_AND_MEAN
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#define _CRT_SECURE_NO_WARNINGS
 
 #include<stdio.h>
 #include<winsock2.h>
+#include <windows.h>
+#include <conio.h>
+#include <stdlib.h>
 
-#pragma comment(lib,"ws2_32.lib") //Winsock Library
+#include "declerations.h"
 
-#define BUFLEN 512	//Max length of buffer
-#define PORT 5059	//The port on which to listen for incoming data
+#pragma comment(lib,"ws2_32.lib")
+
+#define BUFLEN 512	//max duzina buffera
+#define PORT 5059	//port na kom slusa LB
 
 int main()
 {
@@ -14,42 +22,47 @@ int main()
 	struct sockaddr_in server, si_other;
 	int slen, recv_len;
 	char buf[BUFLEN];
-	WSADATA wsa;
-
 	slen = sizeof(si_other);
 
+
+	WSADATA wsa;
 	//Inicijalizacija winsocka
-	printf("\nInicijalizacija Winsock...");
+	printf("\nInicijalizacija windows soketa...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("Greka. Kod greske: %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
+		printf("\n[GRESKA] Lose inicijalizovan soket > %d", WSAGetLastError());
+		return 0;
 	}
-	printf("Inicijalizovan uspesno.\n");
+	printf("\nSocket inicijalizovan uspesno.");
 
-	//Create a socket
+	//Pravljenje soketa
 	if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET)
 	{
-		printf("Nemoguce kreirati soket : %d", WSAGetLastError());
+		printf("\n[GRESKA] Neuspesno kreiran soket : %d", WSAGetLastError());
+		return 0;
 	}
-	printf("Socket uspesno kreiran.\n");
+	printf("\nSocket uspesno kreiran.");
 
 	//inicijalizacija adrese
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
 	server.sin_port = htons(PORT);
 
-	//Bind
+	//Bindovanje adresa za soket
 	if (bind(s, (struct sockaddr*)&server, sizeof(server)) == SOCKET_ERROR)
 	{
-		printf("Bind neuspesno, greska: %d", WSAGetLastError());
+		printf("\n[GRESKA] Bind neuspesno, greska: %d", WSAGetLastError());
 		exit(EXIT_FAILURE);
 	}
-	puts("Bindovanje uspesno");
+	puts("\nBindovanje adrese za soket uspesno.");
 
+
+
+
+	//sada komuniciramo
 	while (1)
 	{
-		printf("Cekanje poruke...");
+		printf("\nCekanje poruke...");
 		fflush(stdout);
 
 		//ciscenje buffera i zauzimanje prostora

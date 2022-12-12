@@ -53,6 +53,7 @@ int main(void)
 		}
 
 		//prijem odgovora od LB
+		
 		//ciscenje buffera
 		memset(buf, '\0', BUFLEN);
 		if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr*)&si_other, &slen) == SOCKET_ERROR)

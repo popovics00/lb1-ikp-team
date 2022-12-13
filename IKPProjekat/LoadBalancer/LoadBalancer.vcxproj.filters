@@ -23,5 +23,11 @@
     <ClInclude Include="declerations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="communication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

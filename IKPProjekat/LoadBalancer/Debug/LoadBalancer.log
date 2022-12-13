@@ -1,2 +1,4 @@
 ﻿  main.c
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\main.c(37,13): warning C4028: formal parameter 1 different from declaration
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\main.c(38,3): warning C4022: 'CreateThread': pointer mismatch for actual parameter 4
   LoadBalancer.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\LoadBalancer.exe

@@ -2,6 +2,7 @@
 
 #include<stdio.h>
 #include<winsock2.h>
+#include <stdbool.h>
 
 #pragma comment(lib,"ws2_32.lib") //Winsock Library
 
@@ -9,63 +10,118 @@
 #define BUFLEN 512	//max duzina buffera
 #define PORT 5059	//port na kom server slusa
 
+unsigned long nonBlockingMode = 1;
+
+void SetNonblocking(SOCKET* socket) {
+	int iResult = ioctlsocket(*socket, FIONBIO, &nonBlockingMode);
+	if (iResult == SOCKET_ERROR) {
+		printf("\nioctlsocket failed with error: %d", WSAGetLastError());
+	}
+}
+
+bool InitializeWindowsSockets()
+{
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		printf("\nWSAStartup failed with error: %d", WSAGetLastError());
+		return false;
+	}
+	return true;
+}
+
+
+SOCKET SetConnectedSocket(u_short port) {
+	SOCKET connectSocket = INVALID_SOCKET;
+
+	if (InitializeWindowsSockets() == false)
+	{
+		return 1;
+	}
+
+	// create a socket
+	connectSocket = socket(AF_INET,
+		SOCK_STREAM,
+		IPPROTO_TCP);
+
+	if (connectSocket == INVALID_SOCKET)
+	{
+		printf("\nsocket failed with error: %ld", WSAGetLastError());
+		WSACleanup();
+		return 1;
+	}
+
+	struct sockaddr_in serverAddress;
+	serverAddress.sin_family = AF_INET;
+	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddress.sin_port = htons(port);
+
+	if (connect(connectSocket, (SOCKADDR*)&serverAddress, sizeof(serverAddress)) == SOCKET_ERROR)
+	{
+		printf("\nGreska prilikom konektovanja na server. %ld",WSAGetLastError());
+		closesocket(connectSocket);
+		WSACleanup();
+		return 1;
+	}
+
+	SetNonblocking(&connectSocket);
+
+	return connectSocket;
+}
+
 int main(void)
 {
-	struct sockaddr_in si_other;
-	int s, slen = sizeof(si_other);
 	char buf[BUFLEN];
 	char message[BUFLEN];
-	WSADATA wsa;
-
-	//inicijalizacija winsock
-	printf("\nInicijalizacija Winsock...");
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-	{
-		printf("Greska. Error kod: %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
+	int iResult = 0;
+	SOCKET s = SetConnectedSocket(PORT);
+	if (s == 1) {
+		printf("\nStisni enter za izlaz...");
+		getchar();
+		return 0;
 	}
-	printf("Inicijalizovan uspesno.\n");
+	printf("\nKlijent je uspesno startovan...\nStisni enter za izlazak...");
 
-	//pravljenje socketa
-	if ((s = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
-	{
-		printf("socket() ima gresku : %d", WSAGetLastError());
-		exit(EXIT_FAILURE);
-	}
-
-	//podesavanje adresne strukture za slanje
-	memset((char*)&si_other, 0, sizeof(si_other));
-	si_other.sin_family = AF_INET;
-	si_other.sin_port = htons(PORT);
-	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
-
-	//pocetak komunikacije
-	while (1)
-	{
-		printf("Unesite poruku: ");
-		gets(message);
-
-		//slanje poruke
-		if (sendto(s, message, strlen(message), 0, (struct sockaddr*)&si_other, slen) == SOCKET_ERROR)
-		{
-			printf("sendto() greska sa kodom: %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
+	while (1) {
+		if (_kbhit()) {
+			break;
 		}
+		FD_SET set;
+		FD_ZERO(&set);
+		FD_SET(s, &set);
 
-		//prijem odgovora od LB
-		
-		//ciscenje buffera
-		memset(buf, '\0', BUFLEN);
-		if (recvfrom(s, buf, BUFLEN, 0, (struct sockaddr*)&si_other, &slen) == SOCKET_ERROR)
-		{
-			printf("recvfrom() greska prilikom odgovora od servera: %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
+		struct timeval timeVal;
+		timeVal.tv_sec = 0;
+		timeVal.tv_usec = 0;
+
+		iResult = select(0, NULL, &set, NULL, &timeVal);
+
+		//printf("\n(IResult > %d)", iResult);
+		if (iResult == SOCKET_ERROR) {	//error
+			printf("\nGreska prilikom selekcije soketa: %d", WSAGetLastError());
+			break;
 		}
-		printf("Odgovor od LB: %s\n",buf);
+		else if (iResult == 0) {
+			printf("\nCekamo odgovor...");
+			Sleep(100);
+			continue;
+		}
+		else if (FD_ISSET(s, &set)) { // send
+			char slanjePoruka[]="";
+			printf("\nCekamo poruku od servera >> ");
+			scanf("%s", &slanjePoruka);
+			iResult = send(s, slanjePoruka, (int)strlen(slanjePoruka), 0);
+			printf("Poruka uspesno poslata! (IResult: %d)",iResult);
+			Sleep(1000);
+			continue;
+		}
 	}
-
 	closesocket(s);
 	WSACleanup();
 
+	printf("\nBrojilo je ugaseno...");
+	getchar();
 	return 0;
 }
+
+

@@ -13,15 +13,16 @@
 
 #include "communication.h"
 #include "structs.h"
+#include "RingBuffer.h"
 
 #pragma comment(lib,"ws2_32.lib")
 #define PORT 5059	//port na kom slusa LB
+#define INITIAL_CAPACITY_BUFFER 1000
 
 //GLOBAL VARS
 Queue* primaryQueue = NULL;
 Queue* tempQueue = NULL;
 Queue* secondaryQueue = NULL;
-
 
 int main()
 {
@@ -31,13 +32,16 @@ int main()
 	Kreira socket, osluskuje i prima poruke u novom THREAD-u
 	Obradjuje ih i cuva ih u QUEUE
 	*/
-	SOCKET listenSocket = SetListenSocket(PORT);
+	SOCKET serverSocket = SetListenSocket(PORT);
+
+	primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
+	DWORD komunikacijaSaCuvanjemURedId;
 	HANDLE komunikacijaSaCuvanjemURed = CreateThread(NULL,
 		0,
-		AddToQueue,
-		listenSocket,
+		WorkWithSockets,
+		&serverSocket,
 		0,
-		NULL
+		&komunikacijaSaCuvanjemURedId
 	);
 	
 	

@@ -1,13 +1,15 @@
 #pragma once
 #include <windows.h>
 
-typedef struct Client {
+typedef struct Meter {
 	int id;
 	HANDLE thread;
 	SOCKET acceptedSocket;
+	int lastMonth;
+	int debt;
 	char* ipAdr;
 	int port;
-}Client;
+}Meter;
 
 typedef struct Worker {
 	int id;
@@ -32,7 +34,7 @@ typedef struct Queue {
 }Queue;
 
 typedef struct Node {
-	Client* client;
+	Meter* meter;
 	struct Node* next;
 }Node;
 

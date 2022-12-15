@@ -11,12 +11,17 @@
 #define PORT 5059	//port na kom server slusa
 
 unsigned long nonBlockingMode = 1;
+unsigned long blockingMode = 0;
 
 void SetNonblocking(SOCKET* socket) {
 	int iResult = ioctlsocket(*socket, FIONBIO, &nonBlockingMode);
 	if (iResult == SOCKET_ERROR) {
 		printf("\nioctlsocket failed with error: %d", WSAGetLastError());
 	}
+}
+
+int GenerateRandomNumber(int minNumber) {
+	return (rand() % ((minNumber+500) - minNumber + 1)) + minNumber;
 }
 
 bool InitializeWindowsSockets()
@@ -71,6 +76,8 @@ SOCKET SetConnectedSocket(u_short port) {
 
 int main(void)
 {
+	int prosliMesec = 0;
+	int ovajMesec = 0;
 	char buf[BUFLEN];
 	char message[BUFLEN];
 	int iResult = 0;
@@ -81,7 +88,6 @@ int main(void)
 		return 0;
 	}
 	printf("\nKlijent je uspesno startovan...\nStisni enter za izlazak...");
-
 	while (1) {
 		if (_kbhit()) {
 			break;
@@ -108,11 +114,18 @@ int main(void)
 		}
 		else if (FD_ISSET(s, &set)) { // send
 			char slanjePoruka[]="";
+			char recvbuf[BUFLEN];
 			printf("\nCekamo poruku od servera >> ");
-			scanf("%s", &slanjePoruka);
+			//scanf("%s", &slanjePoruka);
+			ovajMesec = GenerateRandomNumber(prosliMesec);
+			sprintf(slanjePoruka, "%d", ovajMesec);
 			iResult = send(s, slanjePoruka, (int)strlen(slanjePoruka), 0);
+			prosliMesec = ovajMesec;
 			printf("Poruka uspesno poslata! (IResult: %d)",iResult);
-			Sleep(1000);
+			//iResult = recv(s, recvbuf, BUFLEN, 0);
+			//recvbuf[iResult] = '\0';
+			//printf("Dug je sada %s", recvbuf);
+			Sleep(10000);
 			continue;
 		}
 	}

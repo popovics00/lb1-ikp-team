@@ -1,3 +1,4 @@
 ﻿  main.c
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(123,14): warning C4129: 'M': unrecognized character escape sequence
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(227): warning C4715: 'WorkWithSockets': not all control paths return a value
   LoadBalancer.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\LoadBalancer.exe

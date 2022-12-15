@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "meterList.h"
 #include "communication.h"
 #include "structs.h"
 #include "RingBuffer.h"
@@ -27,7 +28,7 @@ Queue* secondaryQueue = NULL;
 int main()
 {
 	/*
-			    	LBfromBrRecieverThread
+					LBfromBrRecieverThread
 	--------------------------------------------------------
 	Kreira socket, osluskuje i prima poruke u novom THREAD-u
 	Obradjuje ih i cuva ih u QUEUE
@@ -43,19 +44,22 @@ int main()
 		0,
 		&komunikacijaSaCuvanjemURedId
 	);
-	
-	
-	
-	
-	
+
+
+
+
+
 	//CISTO DA SE NE UGASI PROGRAM
 	int temp = 0;
 	while (1) {
 		scanf("%d", &temp);
 		printf("%d", temp);
+		if (temp == 0)
+			break;
 	}
 
-	//zatvaranje niti
+	//zatvaranje niti i prazni zauzeto
+	FreeList(headMetersList); // ciscenje liste metera
 	CloseHandle(komunikacijaSaCuvanjemURed);
 	return 0;
 }

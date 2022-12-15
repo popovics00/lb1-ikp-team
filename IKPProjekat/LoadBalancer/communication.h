@@ -6,7 +6,7 @@
 #include <conio.h>
 #include "structs.h"
 
-Node* headClients;
+Node* headMetersList = NULL; // lista metera
 int globalIdWorker = 0;
 int globalIdClient = 0;
 unsigned long nonBlockingMode = 1;
@@ -116,18 +116,25 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 
 			if (iResult > 0)
 			{
-				//Node* temp = headClients;
-				//while (temp != NULL) {
-				//	if (socket == temp->client->acceptedSocket) {
-				//		//EnterCriticalSection(&CriticalSectionForOutput);
-				//printf("\n\nRecv client message:\nThread id = %d.\nClient id: %d.\nPort: %d\nIP address: %s.\nLength message: %d\n\n", GetCurrentThreadId(), temp->client->id, temp->client->port, temp->client->ipAdr, iResult);
-				//		//LeaveCriticalSection(&CriticalSectionForOutput);
-				//		break;
-				//	}
-				//	temp = temp->next;
-				//}
-				recvbuf[iResult] = '\0';
-				printf("%s", recvbuf);
+				Node* temp = headMetersList;
+				while (temp != NULL) {
+					if (socket == temp->meter->acceptedSocket) {
+						recvbuf[iResult] = '\0';
+						printf("\n\nPrimljen izvestaj od:\nThread id = %d.\Meter id: %d.\nPort: %d\nIP adresa: %s.\nDuzina poruke: %d \nPotrosnja za ovaj mesec: %s \n", GetCurrentThreadId(), temp->meter->id, temp->meter->port, temp->meter->ipAdr, iResult, recvbuf);
+						int number = atoi(recvbuf);
+						printf("\nStatus prosli mesec -> Stats ovaj mesec: %d->%d\n\n", temp->meter->lastMonth, number);
+						printf("\nDug je sada -> %d dinara\n\n", temp->meter->debt);
+						UvecajDug(&headMetersList, temp->meter->id, number);
+						//iResult = send(socket, temp->meter->debt, (int)strlen(temp->meter->debt), 0);
+						//printf("\n\nLista metera\n");
+						//IspisiListu(headMetersList);
+						
+						break;
+					}
+					temp = temp->next;
+				}
+				//recvbuf[iResult] = '\0';
+				//printf("%s", recvbuf);
 				continue;
 
 			}
@@ -145,7 +152,8 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 			}
 		}
 	}
-	//deleteNode(&headClients, socket);
+	deleteNode(&headMetersList, socket);
+	globalIdClient--;
 	return 0;
 }
 
@@ -166,33 +174,25 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 		FD_SET set;
 		FD_ZERO(&set);
 		FD_SET(serverSocket, &set);
-		//FD_SET(workerSocket, &set);
 
 		iResult = select(0, &set, NULL, NULL, &timeVal);
-		//printf("\n\t(iResult > %d)", iResult);
 		SetNonblocking(&serverSocket);
 		if (iResult == SOCKET_ERROR) {	//doslo je do greske
-			//EnterCriticalSection(&CriticalSectionForOutput);
 			printf("\nselect failed with error: %d", WSAGetLastError());
-			//LeaveCriticalSection(&CriticalSectionForOutput);
 		}
 		else if (iResult == 0) {	//nista se nije desilo, idemo dalje
 			if (_kbhit()) {
 				break;
 			}
-			//EnterCriticalSection(&CriticalSectionForOutput);
 			printf("\nCekanje klijenta...");
-			//LeaveCriticalSection(&CriticalSectionForOutput);
 			continue;
 		}
 		else { //pristigao zahtev za konekciju na soket za metere
-			Client* newMeter = (Client*)malloc(sizeof(Client));
+			Meter* newMeter = (Meter*)malloc(sizeof(Meter));
 			newMeter->acceptedSocket = accept(serverSocket, (struct sockaddr*)&adresa, &addrlen);
 			if (newMeter->acceptedSocket == INVALID_SOCKET)
 			{
-				//EnterCriticalSection(&CriticalSectionForOutput);
 				printf("\naccept failed with error: %d", WSAGetLastError());
-				//LeaveCriticalSection(&CriticalSectionForOutput);
 				closesocket(serverSocket);
 				WSACleanup();
 				return 1;
@@ -204,6 +204,8 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 			newMeter->acceptedSocket = newMeter->acceptedSocket;
 			newMeter->ipAdr = clientip;
 			newMeter->port = adresa.sin_port;
+			newMeter->lastMonth = 0;
+			newMeter->debt = 0;
 			newMeter->thread = CreateThread(NULL,
 				0,
 				PrijemDaljihPoruka,
@@ -211,7 +213,6 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 				0,
 				&threadId
 			);
-			//EnterCriticalSection(&CriticalSectionForOutput);
 			printf(
 				"\n---------------------------\n\tBrojilo[%d]\nid: %d\nip Address: %s\nport: %d\nthreadId:%d \n\tje prihvaceno\t\n---------------------------\n"
 				, newMeter->id,
@@ -220,7 +221,7 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 				newMeter->port,
 				threadId
 			);
-			//LeaveCriticalSection(&CriticalSectionForOutput);
+			AddAtEnd(&headMetersList, newMeter);
 		}
 	} while (1);
 }

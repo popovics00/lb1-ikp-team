@@ -1,13 +1,29 @@
 #pragma once
 #include "structs.h"
 
-Queue* CreateQueue(int kapacitet) {
+Queue* tempQueue = NULL;
+Queue* secondaryQueue = NULL;
+
+//DEKLERACIJE
+Queue* CreateQueue(int cap);
+bool IsEmpty(Queue* queue);
+bool IsFull(Queue* queue, int strlenMessage);
+bool Enqueue(Queue* queue, char* message, int strlenMessage);
+char* Dequeue(Queue* queue);
+bool AddHeaderLength(Queue* queue, int strlenMess);
+bool AddMessage(Queue* queue, char* message, int strlenMess);
+char* DequeueStrlenMessage(Queue* queue);
+bool PrimaryToSecondary(Queue* primaryQueue);
+bool TempToPrimary(Queue* primaryQueue);
+void DestroyQueue(Queue*);
+
+Queue* CreateQueue(int cap) {
 	Queue* queue = (Queue*)malloc(sizeof(Queue));
 	queue->size = 0;
-	queue->capacity = kapacitet;
+	queue->capacity = cap;
 	queue->rear = 0;
 	queue->front = 0;
-	queue->array = (char*)malloc(sizeof(char) * kapacitet);
+	queue->array = (char*)malloc(sizeof(char) * cap);
 	return queue;
 }
 bool IsEmpty(Queue* queue) {
@@ -23,8 +39,6 @@ bool IsFull(Queue* queue, int strlenMessage) {
 	}
 	return false;
 }
-/*
-* 
 bool Enqueue(Queue* queue, char* message, int strlenMessage) {
 	bool success = false;
 	if (!IsFull(queue, strlenMessage)) {
@@ -44,8 +58,8 @@ bool Enqueue(Queue* queue, char* message, int strlenMessage) {
 		else { //napunio nam se i privremeni, dodati logiku da pauziramo klijente ili tako nesto
 			printf("\n!!!Queue is full!!!\n");
 		}
-		PrimaryToSecondary();
-		TempToPrimary();
+		PrimaryToSecondary(queue);
+		TempToPrimary(queue);
 	}
 	return success;
 }
@@ -94,7 +108,7 @@ char* Dequeue(Queue* queue) {
 	}
 	return NULL;
 }
-bool PrimaryToSecondary() {
+bool PrimaryToSecondary(Queue* primaryQueue) {
 	int secondaryIndex = 0;
 
 	for (int i = 0; i < primaryQueue->size; i++)
@@ -112,7 +126,7 @@ bool PrimaryToSecondary() {
 
 	return true;
 }
-bool TempToPrimary() {
+bool TempToPrimary(Queue* primaryQueue) {
 	int secondaryIndex = 0;
 	for (int i = 0; i < tempQueue->size; i++)
 	{
@@ -129,5 +143,3 @@ void DestroyQueue(Queue* queue) {
 		free(queue);
 	}
 }
-
-*/

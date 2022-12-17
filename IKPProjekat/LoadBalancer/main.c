@@ -20,10 +20,6 @@
 #define PORT 5059	//port na kom slusa LB
 #define INITIAL_CAPACITY_BUFFER 1000
 
-//GLOBAL VARS
-Queue* primaryQueue = NULL;
-Queue* tempQueue = NULL;
-Queue* secondaryQueue = NULL;
 
 int main()
 {

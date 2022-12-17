@@ -1,12 +1,15 @@
 #define BUFLEN 1024	//max duzina buffera
+#define INITIAL_CAPACITY_BUFFER 1000
 
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
 #include "structs.h"
+#include "RingBuffer.h"
 
 Node* headMetersList = NULL; // lista metera
+Queue* primaryQueue = NULL; //ring buffer zahtev
 int globalIdWorker = 0;
 int globalIdClient = 0;
 unsigned long nonBlockingMode = 1;
@@ -97,6 +100,8 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 	int addrlen = sizeof(adresaKlijenta);
 	int numberRecv = 0;
 	SetBlocking(&socket);
+	if(primaryQueue==NULL)
+		primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
 	while (true) {
 		FD_SET set;
 		FD_ZERO(&set);

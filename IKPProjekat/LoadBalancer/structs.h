@@ -25,12 +25,17 @@ typedef struct MessageForWorker {
 	char* message;
 }MessageForWorker;
 
+typedef struct Racun {
+	int meterId;
+	int stanjeTrenutno;
+}Racun;
+
 typedef struct Queue {
 	int front;
 	int rear;
 	int size;
 	int capacity;
-	char* array;
+	Racun* racun;
 }Queue;
 
 typedef struct Node {

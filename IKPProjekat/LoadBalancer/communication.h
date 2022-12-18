@@ -15,7 +15,10 @@ int globalIdClient = 0;
 unsigned long nonBlockingMode = 1;
 unsigned long BlockingMode = 0;
 
-
+void inicijalizacijeReda() {
+	if (primaryQueue == NULL)
+		primaryQueue = CreateQueue(1000);
+}
 void SetNonblocking(SOCKET* socket) {
 	int iResult = ioctlsocket(*socket, FIONBIO, &nonBlockingMode);
 	if (iResult == SOCKET_ERROR) {
@@ -100,8 +103,6 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 	int addrlen = sizeof(adresaKlijenta);
 	int numberRecv = 0;
 	SetBlocking(&socket);
-	if(primaryQueue==NULL)
-		primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
 	while (true) {
 		FD_SET set;
 		FD_ZERO(&set);
@@ -130,16 +131,18 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 						printf("\nStatus prosli mesec -> Stats ovaj mesec: %d->%d\n\n", temp->meter->lastMonth, number);
 						printf("\nDug je sada -> %d dinara\n\n", temp->meter->debt);
 						UvecajDug(&headMetersList, temp->meter->id, number);
-						//iResult = send(socket, temp->meter->debt, (int)strlen(temp->meter->debt), 0);
+
 						//printf("\n\nLista metera\n");
 						//IspisiListu(headMetersList);
-						
+						Racun* r = (Racun*)malloc(sizeof(Racun));
+						r->meterId = temp->meter->id;
+						r->stanjeTrenutno = number;
+						//push(&primaryQueue);
+						enqueue(&primaryQueue, r);
 						break;
 					}
 					temp = temp->next;
 				}
-				//recvbuf[iResult] = '\0';
-				//printf("%s", recvbuf);
 				continue;
 
 			}
@@ -189,7 +192,7 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 			if (_kbhit()) {
 				break;
 			}
-			printf("\nCekanje klijenta...");
+			//printf("\nCekanje klijenta...");
 			continue;
 		}
 		else { //pristigao zahtev za konekciju na soket za metere
@@ -229,4 +232,19 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 			AddAtEnd(&headMetersList, newMeter);
 		}
 	} while (1);
+}
+
+DWORD WINAPI SlanjeSoketima(void* vargp) {
+	SOCKET workerSocket = *(SOCKET*)vargp;
+	while (1) {
+		Racun temp = dequeue(&primaryQueue);
+		if (temp.meterId == -1)
+		{
+			//printf("\nRed je prazan");
+		}
+		else {
+			printf("\nSkinuto sa reda Id: %d Stanje: %d", temp.meterId, temp.stanjeTrenutno);
+		}
+		Sleep(1000);
+	}
 }

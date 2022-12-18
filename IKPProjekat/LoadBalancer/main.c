@@ -1,4 +1,5 @@
 #pragma warning( disable : 4996)
+#pragma warning( disable : 4700)
 #define WIN32_LEAN_AND_MEAN
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
@@ -18,11 +19,13 @@
 
 #pragma comment(lib,"ws2_32.lib")
 #define PORT 5059	//port na kom slusa LB
+#define PORTWorker 5079	//port na kom slusa LB
 #define INITIAL_CAPACITY_BUFFER 1000
 
 
 int main()
 {
+	inicijalizacijeReda();
 	/*
 					LBfromBrRecieverThread
 	--------------------------------------------------------
@@ -30,8 +33,9 @@ int main()
 	Obradjuje ih i cuva ih u QUEUE
 	*/
 	SOCKET serverSocket = SetListenSocket(PORT);
+	SOCKET workerSocket = SetListenSocket(PORTWorker);
 
-	primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
+	//primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
 	DWORD komunikacijaSaCuvanjemURedId;
 	HANDLE komunikacijaSaCuvanjemURed = CreateThread(NULL,
 		0,
@@ -41,7 +45,14 @@ int main()
 		&komunikacijaSaCuvanjemURedId
 	);
 
-
+	DWORD komunikacijaSaWorkerimaId;
+	HANDLE komunikacijaSaWorkerima = CreateThread(NULL,
+		0,
+		SlanjeSoketima,
+		&workerSocket,
+		0,
+		&komunikacijaSaWorkerimaId
+	);
 
 
 

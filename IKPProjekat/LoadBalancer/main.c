@@ -13,8 +13,9 @@
 #include <stdbool.h>
 
 #include "meterList.h"
-#include "communication.h"
 #include "structs.h"
+#include "communication.h"
+#include "communicationWorker.h"
 #include "RingBuffer.h"
 
 #pragma comment(lib,"ws2_32.lib")
@@ -45,6 +46,15 @@ int main()
 		&komunikacijaSaCuvanjemURedId
 	);
 
+	DWORD komunikacijaSaCuvanjemWorkeraURedId;
+	HANDLE komunikacijaSaCuvanjemWorkeraURed = CreateThread(NULL,
+		0,
+		WorkWithSocketsWorker,
+		&workerSocket,
+		0,
+		&komunikacijaSaCuvanjemWorkeraURedId
+	);
+
 	DWORD komunikacijaSaWorkerimaId;
 	HANDLE komunikacijaSaWorkerima = CreateThread(NULL,
 		0,
@@ -68,5 +78,7 @@ int main()
 	//zatvaranje niti i prazni zauzeto
 	FreeList(headMetersList); // ciscenje liste metera
 	CloseHandle(komunikacijaSaCuvanjemURed);
+	CloseHandle(komunikacijaSaCuvanjemWorkeraURed);
+	CloseHandle(komunikacijaSaWorkerima);
 	return 0;
 }

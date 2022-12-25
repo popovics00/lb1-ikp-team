@@ -1,7 +1,6 @@
 #pragma once
 #include "structs.h"
 
-
 Queue* CreateQueue(int cap) {
 	Queue* queue = (Queue*)malloc(sizeof(Queue));
 	queue->size = 0;

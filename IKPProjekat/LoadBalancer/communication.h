@@ -10,7 +10,6 @@
 
 Node* headMetersList = NULL; // lista metera
 Queue* primaryQueue = NULL; //ring buffer zahtev
-int globalIdWorker = 0;
 int globalIdClient = 0;
 unsigned long nonBlockingMode = 1;
 unsigned long BlockingMode = 0;
@@ -19,6 +18,7 @@ void inicijalizacijeReda() {
 	if (primaryQueue == NULL)
 		primaryQueue = CreateQueue(1000);
 }
+
 void SetNonblocking(SOCKET* socket) {
 	int iResult = ioctlsocket(*socket, FIONBIO, &nonBlockingMode);
 	if (iResult == SOCKET_ERROR) {

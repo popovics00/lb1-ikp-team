@@ -143,10 +143,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="communication.h" />
+    <ClInclude Include="communicationWorker.h" />
     <ClInclude Include="declerations.h" />
     <ClInclude Include="meterList.h" />
     <ClInclude Include="RingBuffer.h" />
     <ClInclude Include="structs.h" />
+    <ClInclude Include="workerList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

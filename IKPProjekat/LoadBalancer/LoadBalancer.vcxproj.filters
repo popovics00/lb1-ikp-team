@@ -35,5 +35,11 @@
     <ClInclude Include="meterList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="communicationWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="workerList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

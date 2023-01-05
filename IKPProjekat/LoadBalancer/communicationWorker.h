@@ -27,80 +27,6 @@ void SetBlockingWorker(SOCKET* socket) {
 	}
 }
 
-DWORD WINAPI DaljiRadWorker(void* vargp) {
-	SOCKET socket = *(SOCKET*)vargp;
-	int iResult = 0;
-	struct timeval timeVal;
-	timeVal.tv_sec = 0;
-	timeVal.tv_usec = 0;
-	struct sockaddr_in adresaKlijenta;
-	int addrlen = sizeof(adresaKlijenta);
-	int numberRecv = 0;
-	SetBlockingWorker(&socket);
-	while (true) {
-		FD_SET set;
-		FD_ZERO(&set);
-		FD_SET(socket, &set);
-
-		char recvbuf[BUFLEN];
-		iResult = select(0, &set, &set, NULL, &timeVal);
-
-		if (FD_ISSET(socket, &set)) {
-			if (iResult == SOCKET_ERROR) {
-				printf("\nioctlsocket failed with error: %d", WSAGetLastError());
-				break;
-			}
-			iResult = recv(socket, recvbuf, BUFLEN, 0);
-
-			int currentLength = 0;
-
-			if (iResult > 0)
-			{
-				NodeW* temp = headWorkerList;
-				while (temp != NULL) {
-					if (socket == temp->worker->acceptedSocket) {
-						recvbuf[iResult] = '\0';
-						printf("\n\nPrimljen izvestaj od:\nThread id = %d.\Worker id: %d.\nPort: %d\nIP adresa: %s.\nDuzina poruke: %d \nPotrosnja za ovaj mesec: %s \n", GetCurrentThreadId(), temp->worker->id, temp->worker->port, temp->worker->ipAdr, iResult, recvbuf);
-						
-						//int number = atoi(recvbuf);
-						//printf("\nStatus prosli mesec -> Stats ovaj mesec: %d->%d\n\n", temp->worker->lastMonth, number);
-						//printf("\nDug je sada -> %d dinara\n\n", temp->worker->debt);
-						//UvecajDug(&headWorkerList, temp->meter->id, number);
-
-						//printf("\n\nLista metera\n");
-						//IspisiListu(headWorkerList);
-						//Racun* r = (Racun*)malloc(sizeof(Racun));
-						//r->meterId = temp->meter->id;
-						//r->stanjeTrenutno = number;
-						//push(&primaryQueue);
-						//enqueue(&primaryQueue, r);
-						break;
-					}
-					temp = temp->next;
-				}
-				continue;
-
-			}
-			else if (iResult == 0)
-			{
-				printf("\nKonekcija sa klijentom zatvorena.");
-				closesocket(socket);
-				break;
-			}
-			else
-			{
-				printf("\nrecv failed with error: %d", WSAGetLastError());
-				closesocket(socket);
-				break;
-			}
-		}
-	}
-	deleteNodeWorker(&headWorkerList, socket);
-	globalIdWorker--;
-	return 0;
-}
-
-
 DWORD WINAPI WorkWithSocketsWorker(void* vargp) {
 	SOCKET serverWorkerSocket = *(SOCKET*)vargp;
 
@@ -147,20 +73,14 @@ DWORD WINAPI WorkWithSocketsWorker(void* vargp) {
 			newWorker->acceptedSocket = newWorker->acceptedSocket;
 			newWorker->ipAdr = clientip;
 			newWorker->port = adresa.sin_port;
-			newWorker->thread = CreateThread(NULL,
-				0,
-				DaljiRadWorker,
-				&newWorker->acceptedSocket,
-				0,
-				&threadId
-			);
+			newWorker->zauzet = false;
+			
 			printf(
-				"\n---------------------------\n\tWorker [%d]\nid: %d\nip Address: %s\nport: %d\nthreadId:%d \n\tje prihvaceno\t\n---------------------------\n"
+				"\n---------------------------\n\tWorker [%d]\nid: %d\nip Address: %s\nport: %d\n\tje prihvaceno\t\n---------------------------\n"
 				, newWorker->id,
 				newWorker->id,
 				newWorker->ipAdr,
-				newWorker->port,
-				threadId
+				newWorker->port
 			);
 			AddAtEndWorker(&headWorkerList, newWorker);
 		}

@@ -1,6 +1,11 @@
 ﻿  main.c
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(129,14): warning C4129: 'M': unrecognized character escape sequence
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(63,14): warning C4129: 'W': unrecognized character escape sequence
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(235): warning C4715: 'WorkWithSockets': not all control paths return a value
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(168): warning C4715: 'WorkWithSocketsWorker': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(71,10): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(130,14): warning C4129: 'M': unrecognized character escape sequence
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(245,9): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(261,50): warning C4047: 'function': 'NodeW *' differs in levels of indirection from 'NodeW **'
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(261,35): warning C4024: 'VratiSlobodnogWorkera': different types for formal and actual parameter 1
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(282,10): warning C4098: 'SlanjeSoketima': 'void' function returning a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(88): warning C4715: 'WorkWithSocketsWorker': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(237): warning C4715: 'WorkWithSockets': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(250): warning C4716: 'ObradaRacuna': must return a value
   LoadBalancer.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\LoadBalancer.exe

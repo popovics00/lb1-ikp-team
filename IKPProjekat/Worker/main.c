@@ -19,7 +19,12 @@ void SetNonblocking(SOCKET* socket) {
 		printf("\nioctlsocket failed with error: %d", WSAGetLastError());
 	}
 }
-
+void SetBlocking(SOCKET* socket) {
+	int iResult = ioctlsocket(*socket, FIONBIO, &blockingMode);
+	if (iResult == SOCKET_ERROR) {
+		printf("\nioctlsocket failed with error: %d", WSAGetLastError());
+	}
+}
 
 bool InitializeWindowsSockets()
 {
@@ -111,7 +116,18 @@ int main(void)
 			printf("\nCekamo poruku od servera >> ");
 			iResult = send(s, slanjePoruka, (int)strlen(slanjePoruka), 0);
 			printf("Poruka uspesno poslata! (IResult: %d)", iResult);
-			Sleep(10000);
+			
+			SetBlocking(&s);
+			while (1)
+			{
+				printf("ceka1");
+				iResult = recv(s, recvbuf, BUFLEN, 0);
+				printf("ceka2");
+				recvbuf[iResult] = '\0';
+				printf("%s", recvbuf);
+				Sleep(100);
+			}
+			break;
 		}
 	}
 	closesocket(s);

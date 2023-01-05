@@ -66,6 +66,22 @@ NodeW* FindMeterWorker(NodeW* head, int meterId) {
 	return temp;
 }
 
+Worker* VratiSlobodnogWorkera(NodeW* head) {
+	NodeW* temp = head;
+	while (temp != NULL) {
+		if (temp->worker->zauzet == false)
+			return temp->worker;
+		temp = temp->next;
+		if (temp == NULL) {
+			printf("\nNismo pronasli ni jednog slobodnog workera u ovom krugu.");
+			//temp = head;
+			return NULL;
+		}
+		printf("while fun");
+		Sleep(100);
+	}
+	return NULL;
+}
 
 void IspisiListuWorker(NodeW* head) {
 	NodeW* temp = head;
@@ -74,4 +90,15 @@ void IspisiListuWorker(NodeW* head) {
 		if (temp->next == NULL)
 			break;
 	}
+}
+
+int IzbrojWorkere(NodeW* head) {
+	NodeW* temp = head;
+	int tempBrojac = 0;
+	while (temp != NULL) {
+		tempBrojac++;
+		if (temp->next == NULL)
+			break;
+	}
+	return tempBrojac;
 }

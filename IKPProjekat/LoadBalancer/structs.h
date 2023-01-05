@@ -14,6 +14,7 @@ typedef struct Meter {
 typedef struct Worker {
 	int id;
 	int counter;
+	bool zauzet;
 	HANDLE thread;
 	SOCKET acceptedSocket;
 	int port;
@@ -28,6 +29,7 @@ typedef struct MessageForWorker {
 typedef struct Racun {
 	int meterId;
 	int stanjeTrenutno;
+	int stanjeStaro;
 }Racun;
 
 typedef struct Queue {

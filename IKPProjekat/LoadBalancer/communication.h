@@ -7,6 +7,7 @@
 #include <conio.h>
 #include "structs.h"
 #include "RingBuffer.h"
+#include "communicationWorker.h"
 
 Node* headMetersList = NULL; // lista metera
 Queue* primaryQueue = NULL; //ring buffer zahtev
@@ -137,6 +138,7 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 						Racun* r = (Racun*)malloc(sizeof(Racun));
 						r->meterId = temp->meter->id;
 						r->stanjeTrenutno = number;
+						r->stanjeStaro = temp->meter->lastMonth;
 						//push(&primaryQueue);
 						enqueue(&primaryQueue, r);
 						break;
@@ -234,17 +236,49 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 	} while (1);
 }
 
-DWORD WINAPI SlanjeSoketima(void* vargp) {
-	SOCKET workerSocket = *(SOCKET*)vargp;
-	while (1) {
-		Racun temp = dequeue(&primaryQueue);
-		if (temp.meterId == -1)
-		{
-			//printf("\nRed je prazan");
-		}
-		else {
-			printf("\nSkinuto sa reda Id: %d Stanje: %d", temp.meterId, temp.stanjeTrenutno);
+DWORD WINAPI ObradaRacuna(void* vargp) {
+	Worker* worker = (Worker*)vargp;
+	Racun temp = dequeue(&primaryQueue);
+	if (temp.meterId != -1)
+	{
+		worker->zauzet = true;
+		DWORD threadId;
+		int iResult = send(worker->acceptedSocket, "test", (int)strlen("test"), 0);
+
+	}
+	worker = NULL;
+}
+
+void SlanjeSoketima() {
+	printf("\n\tpre while");
+	int brojWorkera = 0;
+	Worker* worker = NULL;
+	while (true) {
+		brojWorkera = IzbrojWorkere(headWorkerList);
+		printf("\n\tpre ifa");
+		if (primaryQueue->size > 0 && brojWorkera > 0) {
+			printf("\n\tpre ifa 1");
+			worker = VratiSlobodnogWorkera(&headWorkerList);
+			printf("\n\tpre ifa 2");
+
+			if (worker == NULL) {
+				//nema slobodnog workera
+				printf("1");
+			}
+			else {
+				DWORD threadId;
+				printf("2");
+				worker->thread = CreateThread(NULL,
+					0,
+					ObradaRacuna,
+					worker,
+					0,
+					&threadId
+				);
+			}
 		}
 		Sleep(1000);
 	}
+	return 0;
 }
+

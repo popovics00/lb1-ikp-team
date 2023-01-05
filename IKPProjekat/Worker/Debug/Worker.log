@@ -1,5 +1,4 @@
 ﻿  main.c
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Worker\main.c(79,7): warning C4101: 'message': unreferenced local variable
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Worker\main.c(78,7): warning C4101: 'buf': unreferenced local variable
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Worker\main.c(110,9): warning C4101: 'recvbuf': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Worker\main.c(84,7): warning C4101: 'message': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Worker\main.c(83,7): warning C4101: 'buf': unreferenced local variable
   Worker.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\Worker.exe

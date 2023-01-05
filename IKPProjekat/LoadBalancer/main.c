@@ -15,7 +15,6 @@
 #include "meterList.h"
 #include "structs.h"
 #include "communication.h"
-#include "communicationWorker.h"
 #include "RingBuffer.h"
 
 #pragma comment(lib,"ws2_32.lib")
@@ -55,16 +54,16 @@ int main()
 		&komunikacijaSaCuvanjemWorkeraURedId
 	);
 
-	DWORD komunikacijaSaWorkerimaId;
+	/*DWORD komunikacijaSaWorkerimaId;
 	HANDLE komunikacijaSaWorkerima = CreateThread(NULL,
 		0,
 		SlanjeSoketima,
 		&workerSocket,
 		0,
 		&komunikacijaSaWorkerimaId
-	);
+	);*/
 
-
+	SlanjeSoketima();
 
 	//CISTO DA SE NE UGASI PROGRAM
 	int temp = 0;
@@ -79,6 +78,5 @@ int main()
 	FreeList(headMetersList); // ciscenje liste metera
 	CloseHandle(komunikacijaSaCuvanjemURed);
 	CloseHandle(komunikacijaSaCuvanjemWorkeraURed);
-	CloseHandle(komunikacijaSaWorkerima);
 	return 0;
 }

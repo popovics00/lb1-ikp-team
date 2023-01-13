@@ -120,12 +120,12 @@ int main(void)
 			SetBlocking(&s);
 			while (1)
 			{
-				printf("ceka1");
+				//printf("ceka1");
 				iResult = recv(s, recvbuf, BUFLEN, 0);
-				printf("ceka2");
+				//printf("ceka2");
 				recvbuf[iResult] = '\0';
 				printf("%s", recvbuf);
-				Sleep(100);
+				Sleep(3000);
 			}
 			break;
 		}

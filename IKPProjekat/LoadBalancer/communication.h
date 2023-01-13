@@ -244,6 +244,7 @@ DWORD WINAPI ObradaRacuna(void* vargp) {
 		worker->zauzet = true;
 		DWORD threadId;
 		int iResult = send(worker->acceptedSocket, "test", (int)strlen("test"), 0);
+		worker->zauzet = false;
 
 	}
 	worker = NULL;
@@ -255,19 +256,18 @@ void SlanjeSoketima() {
 	Worker* worker = NULL;
 	while (true) {
 		brojWorkera = IzbrojWorkere(headWorkerList);
-		printf("\n\tpre ifa");
+		printf("\n%d %d\n",brojWorkera, primaryQueue->size);
 		if (primaryQueue->size > 0 && brojWorkera > 0) {
-			printf("\n\tpre ifa 1");
-			worker = VratiSlobodnogWorkera(&headWorkerList);
-			printf("\n\tpre ifa 2");
+			worker = VratiSlobodnogWorkera(headWorkerList);
 
 			if (worker == NULL) {
 				//nema slobodnog workera
-				printf("1");
+				printf("Nema slobodnog workera");
+				Sleep(1000);
+				continue;
 			}
 			else {
 				DWORD threadId;
-				printf("2");
 				worker->thread = CreateThread(NULL,
 					0,
 					ObradaRacuna,

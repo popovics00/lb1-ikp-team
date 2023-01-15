@@ -1,4 +1,4 @@
-#define BUFLEN 1024	//max duzina buffera
+﻿#define BUFLEN 1024	//max duzina buffera
 #define INITIAL_CAPACITY_BUFFER 1000
 
 #include <ws2tcpip.h>
@@ -36,7 +36,6 @@ void SetBlocking(SOCKET* socket) {
 bool InitializeWindowsSockets()
 {
 	WSADATA wsa;
-	//Inicijalizacija winsocka
 	printf("\nInicijalizacija windows soketa...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
@@ -94,16 +93,27 @@ SOCKET SetListenSocket(int port) {
 	return serverSocket;
 }
 
+
+
+
+/*
+PrijemDaljihPoruka - funkcija koju pokreće WorkWithSockets u zasebnim tredovima koje čuvamo u meteru. Svrha funkcije
+je da očekuje poruke od registrovanih metera i da pravi račune koje ce čuvati u RingBuffer.
+*/
+
 DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 	SOCKET socket = *(SOCKET*)vargp;
 	int iResult = 0;
+
 	struct timeval timeVal;
 	timeVal.tv_sec = 0;
 	timeVal.tv_usec = 0;
+
 	struct sockaddr_in adresaKlijenta;
 	int addrlen = sizeof(adresaKlijenta);
 	int numberRecv = 0;
 	SetBlocking(&socket);
+
 	while (true) {
 		FD_SET set;
 		FD_ZERO(&set);
@@ -131,8 +141,7 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 						int number = atoi(recvbuf);
 						//printf("\nStatus prosli mesec -> Stats ovaj mesec: %d->%d\n\n", temp->meter->lastMonth, number);
 
-						//printf("\n\nLista metera\n");
-						//IspisiListu(headMetersList);
+						//kreiramo racun i cuvamo ga u ring buffer
 						Racun* r = (Racun*)malloc(sizeof(Racun));
 						r->meterId = temp->meter->id;
 						r->stanjeTrenutno = number;
@@ -165,6 +174,13 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 }
 
 
+
+/*
+WorkWithSockets - funkcija koja prati dešavanja na prosleđenom soketu, selektujemo ga i pratimo odgovore.
+Ukoliko pristigne poruka zahteva za konekciju povratna vrednost selekcije bude > 0 i znamo da je pristigao neki zahtev.
+Pravimo novi meter i cuvamo ga na kraju liste.
+*/
+
 DWORD WINAPI WorkWithSockets(void* vargp) {
 	SOCKET serverSocket = *(SOCKET*)vargp;
 
@@ -173,11 +189,11 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 		struct sockaddr_in adresa;
 		int addrlen = sizeof(adresa);
 		int iResult;
-		//timeval
+
 		struct timeval timeVal;
 		timeVal.tv_sec = 1;
 		timeVal.tv_usec = 0;
-		//fdset
+
 		FD_SET set;
 		FD_ZERO(&set);
 		FD_SET(serverSocket, &set);
@@ -194,7 +210,7 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 			//printf("\nCekanje klijenta...");
 			continue;
 		}
-		else { //pristigao zahtev za konekciju na soket za metere
+		else {		//pristigao zahtev za konekciju na soket za metere, 
 			Meter* newMeter = (Meter*)malloc(sizeof(Meter));
 			newMeter->acceptedSocket = accept(serverSocket, (struct sockaddr*)&adresa, &addrlen);
 			if (newMeter->acceptedSocket == INVALID_SOCKET)
@@ -204,6 +220,8 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 				WSACleanup();
 				return 1;
 			}
+
+			//cuvamo sve informacije o meteru i zapocinjemo thread za prijem novih racuna tog klijenta
 			char clientip[20];
 			strcpy(clientip, inet_ntoa(adresa.sin_addr));
 			DWORD threadId;
@@ -220,52 +238,59 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 				0,
 				&threadId
 			);
+
 			printf(
 				"\n---------------------------\n\tBrojilo[%d]\nid: %d\nip Address: %s\nport: %d\nthreadId:%d \n\tje prihvaceno\t\n---------------------------\n"
-				, newMeter->id,
-				newMeter->id,
-				newMeter->ipAdr,
-				newMeter->port,
-				threadId
+				, newMeter->id, newMeter->id, newMeter->ipAdr, newMeter->port, threadId
 			);
-			AddAtEnd(&headMetersList, newMeter);
+
+			AddAtEnd(&headMetersList, newMeter);	//dodaj meter na kraj liste
 		}
 	} while (1);
 }
+
+/*
+ObradaRacuna - pozivamo je za slobodnog workera koje ga zauzme tako što property zauzet postavi na true 
+i posalje mu zadatak u formatu METER ID/STANJE STARO/STANJE NOVO. Zatim primi odgovor od workera i pozove 
+funkciju UvecajDug koja izmeni meter i oslobodi workera. Tu se ta nit, završava do slede upotrebe tog workera.
+*/
 
 DWORD WINAPI ObradaRacuna(void* vargp) {
 	Worker* worker = (Worker*)vargp;
 	Racun temp = dequeue(&primaryQueue);
 	char str[BUFLEN];
-	//formatiranje poruke za slanje
+	//formatiranje poruke za slanje METER ID/STANJE STARO/STANJE NOVO
 	sprintf(str, "%d/%d/%d",temp.meterId, temp.stanjeStaro, temp.stanjeTrenutno);
 
 	if (temp.meterId != -1)	//ako racun postoji
 	{
 		worker->zauzet = true;
 		DWORD threadId;
-		printf("\nRacun za slanje je (meterid/starostanje/trenutno stanje): %s", str);
+		printf("\nObrada racuna pre slanja:\n\tRacun za slanje je (meterid/starostanje/trenutno stanje): %s", str);
 		int iResult = send(worker->acceptedSocket, str, (int)strlen(str), 0);
 		Sleep(2000);
 		iResult = recv(worker->acceptedSocket, str, BUFLEN, 0);
 		str[iResult] = '\0';
-		char compareString[] = "RegisterWorker";
-		printf("\n\nRacun primljen je (meterid/racun): %s", str);
+		printf("\nObrada racuna dobijen izvestaj:\n\tRacun primljen je (meterid/racun): %s", str);
 		if (iResult>1) {
-			char* ptr = strtok(str, "/");
+			char* ptr = strtok(str, "/");	//parsiramo poruku
 			int id = atoi(ptr);
 			ptr = strtok(NULL, "/");
-			//printf("\n\t1test");
 			int novoDugovanje = atoi(ptr);
 			//printf("\n \t id %d dug novi %d", id, novoDugovanje);
-			UvecajDug(&headMetersList,id, novoDugovanje, temp.stanjeTrenutno);
+			UvecajDug(&headMetersList,id, novoDugovanje, temp.stanjeTrenutno);	//menjamo metera
 			worker->zauzet = false;
 		}
-			//printf("\n\t2test");
 		return;
 	}
 	worker = NULL;
 }
+
+/*
+SlanjeSoketima - funkcija koju pozivamo u main niti, njena uloga je da proverava broj workera i broj računa koji cekaju na računanje.
+Ukoliko ih imamo vršimo preuzimanje računa iz buffera  i slanje prvom slobodnom workeru. Worker u svojoj strukturi dobija thread
+koji poziva funkciju ObradaRačuna(worker).
+*/
 
 void SlanjeSoketima() {
 	int brojWorkera = 0;

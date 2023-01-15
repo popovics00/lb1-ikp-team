@@ -1,4 +1,4 @@
-#define BUFLEN 1024	//max duzina buffera
+﻿#define BUFLEN 1024	//max duzina buffera
 #define INITIAL_CAPACITY_BUFFER 1000
 
 #include <ws2tcpip.h>
@@ -26,6 +26,9 @@ void SetBlockingWorker(SOCKET* socket) {
 		printf("ioctlsocket failed with error: %d\n", WSAGetLastError());
 	}
 }
+/*
+WorkWithSocketsWorker - funkcija koja osluškuje na drugom soketu i čeka zahteve za registraciju novih workera koje kreira i čuva u novi red.
+*/
 
 DWORD WINAPI WorkWithSocketsWorker(void* vargp) {
 	SOCKET serverWorkerSocket = *(SOCKET*)vargp;
@@ -82,7 +85,7 @@ DWORD WINAPI WorkWithSocketsWorker(void* vargp) {
 				newWorker->ipAdr,
 				newWorker->port
 			);
-			AddAtEndWorker(&headWorkerList, newWorker);
+			AddAtEndWorker(&headWorkerList, newWorker);	//dodavanje na kraj liste
 		}
 	} while (1);
 }

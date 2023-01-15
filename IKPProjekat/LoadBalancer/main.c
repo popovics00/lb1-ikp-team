@@ -26,6 +26,7 @@
 int main()
 {
 	inicijalizacijeReda();
+
 	//pravljenje soketa
 	SOCKET serverSocket = SetListenSocket(PORT);
 	SOCKET workerSocket = SetListenSocket(PORTWorker);

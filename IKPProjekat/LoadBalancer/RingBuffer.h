@@ -21,7 +21,7 @@ int enqueue(Queue** q, Racun* data)
 	*(queue->racun + queue->rear) = *data;
 	queue->size = queue->size + 1;
 	//printf("%d-%d enqueued to queue\n", data->meterId, data->stanjeTrenutno);
-	printf("%d-%d enqueued to queue\n", (queue->racun + queue->rear)->meterId, (queue->racun+queue->rear)->stanjeTrenutno);
+	printf("\n%d-%d enqueued to queue", (queue->racun + queue->rear)->meterId, (queue->racun+queue->rear)->stanjeTrenutno);
 	return true;
 }
 
@@ -33,11 +33,9 @@ Racun dequeue(Queue** q)
 	if(queue->size!=0)
 	{
 		struct Racun item = *(queue->racun + queue->rear);
-		printf("queue %d %d",item.meterId, item.stanjeTrenutno);
+		//printf("\nqueue %d %d",item.meterId, item.stanjeTrenutno);
 		queue->front = (queue->front + 1) % queue->capacity;
 		queue->size = queue->size - 1;
-		//int t = 0;
-		//scanf("%d",&t);
 		return item;
 	}
 	struct Racun r;

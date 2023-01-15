@@ -1,9 +1,10 @@
 ﻿  main.c
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(71,10): warning C4101: 'threadId': unreferenced local variable
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(130,14): warning C4129: 'M': unrecognized character escape sequence
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(245,9): warning C4101: 'threadId': unreferenced local variable
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(282,10): warning C4098: 'SlanjeSoketima': 'void' function returning a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(265,3): warning C4033: 'ObradaRacuna' must return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(246,9): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(297,10): warning C4098: 'SlanjeSoketima': 'void' function returning a value
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(88): warning C4715: 'WorkWithSocketsWorker': not all control paths return a value
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(237): warning C4715: 'WorkWithSockets': not all control paths return a value
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(251): warning C4716: 'ObradaRacuna': must return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(234): warning C4715: 'WorkWithSockets': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(268): warning C4715: 'ObradaRacuna': not all control paths return a value
   LoadBalancer.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\LoadBalancer.exe

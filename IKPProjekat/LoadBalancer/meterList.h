@@ -66,14 +66,13 @@ Node* FindMeter(Node* head, int meterId) {
 	return temp;
 }
 
-void UvecajDug(Node** head_ref, int meterId, int izvestaj) {
+void UvecajDug(Node** head_ref, int meterId, int noviMesecDug, int stanje) {
 	Node* temp = *head_ref;
 	while (temp != NULL) {
 		if (temp->meter->id == meterId)
 		{
-			int calculateMonthDebt = (izvestaj-temp->meter->lastMonth)*120;
-			temp->meter->debt += calculateMonthDebt;
-			temp->meter->lastMonth = izvestaj;
+			temp->meter->debt += noviMesecDug;
+			temp->meter->lastMonth = stanje;
 			break;
 		}
 		else
@@ -89,5 +88,6 @@ void IspisiListu(Node* head) {
 		printf("%d %d %d\n",temp->meter->id, temp->meter->lastMonth,temp->meter->debt);
 		if (temp->next == NULL)
 			break;
+		temp = temp->next;
 	}
 }

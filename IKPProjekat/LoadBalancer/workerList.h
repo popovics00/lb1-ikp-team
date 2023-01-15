@@ -69,10 +69,8 @@ NodeW* FindMeterWorker(NodeW* head, int meterId) {
 Worker* VratiSlobodnogWorkera(NodeW* head) {
 	NodeW* temp = head;
 	while (temp != NULL) {
-		//printf("\nwhile1");
 		if (temp->worker->zauzet == false)
 		{
-			printf("\nwhile2");
 			return temp->worker;
 		}
 		if (temp->next == NULL)
@@ -80,15 +78,13 @@ Worker* VratiSlobodnogWorkera(NodeW* head) {
 		temp = temp->next;
 		Sleep(3000);
 	}
-	printf("izlazak");
 	return NULL;
-	//return NULL;
 }
 
 void IspisiListuWorker(NodeW* head) {
 	NodeW* temp = head;
 	while (temp != NULL) {
-		//printf("%d %d %d\n", temp->worker->id, temp->worker->lastMonth, temp->worker->debt);
+		//printf("%d %d %d\n", temp->worker->id, temp->worker., temp->worker->debt);
 		if (temp->next == NULL)
 			break;
 		temp = temp->next;

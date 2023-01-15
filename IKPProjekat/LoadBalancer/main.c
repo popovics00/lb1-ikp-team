@@ -26,16 +26,11 @@
 int main()
 {
 	inicijalizacijeReda();
-	/*
-					LBfromBrRecieverThread
-	--------------------------------------------------------
-	Kreira socket, osluskuje i prima poruke u novom THREAD-u
-	Obradjuje ih i cuva ih u QUEUE
-	*/
+	//pravljenje soketa
 	SOCKET serverSocket = SetListenSocket(PORT);
 	SOCKET workerSocket = SetListenSocket(PORTWorker);
 
-	//primaryQueue = CreateQueue(INITIAL_CAPACITY_BUFFER);
+	//osluskuje na 1 soketu i registruje nove metere u red metera
 	DWORD komunikacijaSaCuvanjemURedId;
 	HANDLE komunikacijaSaCuvanjemURed = CreateThread(NULL,
 		0,
@@ -45,6 +40,7 @@ int main()
 		&komunikacijaSaCuvanjemURedId
 	);
 
+	//rad sa registracijom workera i cuvanjem u red i poruka u ring buffer
 	DWORD komunikacijaSaCuvanjemWorkeraURedId;
 	HANDLE komunikacijaSaCuvanjemWorkeraURed = CreateThread(NULL,
 		0,
@@ -54,16 +50,9 @@ int main()
 		&komunikacijaSaCuvanjemWorkeraURedId
 	);
 
-	/*DWORD komunikacijaSaWorkerimaId;
-	HANDLE komunikacijaSaWorkerima = CreateThread(NULL,
-		0,
-		SlanjeSoketima,
-		&workerSocket,
-		0,
-		&komunikacijaSaWorkerimaId
-	);*/
-
+	//kupimo poruke i rasporedjujemo ih
 	SlanjeSoketima();
+
 
 	//CISTO DA SE NE UGASI PROGRAM
 	int temp = 0;

@@ -111,7 +111,7 @@ int main(void)
 			return -1;
 		}
 		else if (FD_ISSET(s, &set)) { // send
-			char slanjePoruka[] = "RegisterWorker";
+			char slanjePoruka[] = "0";
 			char recvbuf[BUFLEN];
 			printf("\nCekamo poruku od servera >> ");
 			iResult = send(s, slanjePoruka, (int)strlen(slanjePoruka), 0);
@@ -120,11 +120,21 @@ int main(void)
 			SetBlocking(&s);
 			while (1)
 			{
-				//printf("ceka1");
 				iResult = recv(s, recvbuf, BUFLEN, 0);
-				//printf("ceka2");
 				recvbuf[iResult] = '\0';
-				printf("%s", recvbuf);
+
+				printf("\n%s", recvbuf);
+				char* ptr = strtok(recvbuf, "/");
+				char* id = ptr;
+				ptr = strtok(NULL, "/");
+				int pocetak = atoi(ptr);
+				ptr = strtok(NULL, "/");
+				int kraj = atoi(ptr);
+
+				int racun = (kraj - pocetak) * 117;
+				printf("\n\tRacun je (id/pocetak/kraj/racun): %s %d %d %d", id,pocetak,kraj,racun);
+				sprintf(recvbuf,"%s/%d",id,racun);
+				int iResult = send(s, recvbuf, (int)strlen(recvbuf), 0);
 				Sleep(3000);
 			}
 			break;

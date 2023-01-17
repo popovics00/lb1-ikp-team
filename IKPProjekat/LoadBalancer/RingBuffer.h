@@ -32,10 +32,10 @@ Racun dequeue(Queue** q)
 	//printf("\n\tVelicina reda %d", queue->size);
 	if(queue->size!=0)
 	{
-		struct Racun item = *(queue->racun + queue->front);
-		printf("\n\n\t\Skinuto sa reda %d %d",item.meterId, item.stanjeTrenutno);
 		queue->front = (queue->front + 1) % queue->capacity;
 		queue->size = queue->size - 1;
+		struct Racun item = *(queue->racun + queue->front);
+		printf("\n\n\t\Skinuto sa reda %d %d",item.meterId, item.stanjeTrenutno);
 		return item;
 	}
 	struct Racun r;
@@ -50,7 +50,7 @@ void ispisiRacune(Queue* q)
 
 	if (queue->size != 0)
 	{
-		for (int i = q->front; i <= queue->rear; i++) {
+		for (int i = q->front+1; i <= queue->rear; i++) {
 			struct Racun item = *(queue->racun + i);
 			printf("\n\tRING - %d %d %d",item.meterId, item.stanjeStaro, item.stanjeTrenutno);
 		}

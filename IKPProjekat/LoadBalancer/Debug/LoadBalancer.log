@@ -1,5 +1,5 @@
 ﻿  main.c
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\RingBuffer.h(36,10): warning C4129: 'S': unrecognized character escape sequence
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\RingBuffer.h(38,10): warning C4129: 'S': unrecognized character escape sequence
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(75,10): warning C4101: 'threadId': unreferenced local variable
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(142,14): warning C4129: 'M': unrecognized character escape sequence
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(291,3): warning C4033: 'ObradaRacuna' must return a value

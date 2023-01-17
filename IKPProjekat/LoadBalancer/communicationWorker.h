@@ -9,6 +9,7 @@
 #include "RingBuffer.h"
 #include "workerList.h"
 
+CRITICAL_SECTION cs;
 NodeW* headWorkerList = NULL; // lista metera
 int globalIdWorker = 0;
 unsigned long nonBlockingModeWorker = 1;
@@ -77,14 +78,11 @@ DWORD WINAPI WorkWithSocketsWorker(void* vargp) {
 			newWorker->ipAdr = clientip;
 			newWorker->port = adresa.sin_port;
 			newWorker->zauzet = false;
-			
 			printf(
 				"\n---------------------------\n\tWorker [%d]\nid: %d\nip Address: %s\nport: %d\n\tje prihvaceno\t\n---------------------------\n"
-				, newWorker->id,
-				newWorker->id,
-				newWorker->ipAdr,
-				newWorker->port
+				, newWorker->id, newWorker->id, newWorker->ipAdr, newWorker->port
 			);
+
 			AddAtEndWorker(&headWorkerList, newWorker);	//dodavanje na kraj liste
 		}
 	} while (1);

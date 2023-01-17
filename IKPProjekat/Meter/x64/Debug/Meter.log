@@ -1,0 +1,6 @@
+﻿  main.c
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Meter\main.c(92,13): warning C4013: '_kbhit' undefined; assuming extern returning int
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Meter\main.c(82,7): warning C4101: 'message': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Meter\main.c(81,7): warning C4101: 'buf': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Meter\main.c(117,9): warning C4101: 'recvbuf': unreferenced local variable
+  Meter.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\x64\Debug\Meter.exe

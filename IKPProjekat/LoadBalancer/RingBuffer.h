@@ -1,5 +1,6 @@
 #pragma once
 #include "structs.h"
+CRITICAL_SECTION cs;
 
 Queue* CreateQueue(int cap) {
 	Queue* queue = (Queue*)malloc(sizeof(Queue));
@@ -20,7 +21,6 @@ int enqueue(Queue** q, Racun* data)
 	queue->rear = (queue->rear + 1)	% queue->capacity;
 	*(queue->racun + queue->rear) = *data;
 	queue->size = queue->size + 1;
-	//printf("%d-%d enqueued to queue\n", data->meterId, data->stanjeTrenutno);
 	printf("\n%d-%d enqueued to queue", (queue->racun + queue->rear)->meterId, (queue->racun+queue->rear)->stanjeTrenutno);
 	return true;
 }
@@ -32,8 +32,8 @@ Racun dequeue(Queue** q)
 	//printf("\n\tVelicina reda %d", queue->size);
 	if(queue->size!=0)
 	{
-		struct Racun item = *(queue->racun + queue->rear);
-		//printf("\nqueue %d %d",item.meterId, item.stanjeTrenutno);
+		struct Racun item = *(queue->racun + queue->front);
+		printf("\n\n\t\Skinuto sa reda %d %d",item.meterId, item.stanjeTrenutno);
 		queue->front = (queue->front + 1) % queue->capacity;
 		queue->size = queue->size - 1;
 		return item;
@@ -42,5 +42,18 @@ Racun dequeue(Queue** q)
 	r.meterId = -1;
 	r.stanjeTrenutno = -1;
 	return r;
+}
+
+void ispisiRacune(Queue* q)
+{
+	Queue* queue = q;
+
+	if (queue->size != 0)
+	{
+		for (int i = q->front; i <= queue->rear; i++) {
+			struct Racun item = *(queue->racun + i);
+			printf("\n\tRING - %d %d %d",item.meterId, item.stanjeStaro, item.stanjeTrenutno);
+		}
+	}
 }
 

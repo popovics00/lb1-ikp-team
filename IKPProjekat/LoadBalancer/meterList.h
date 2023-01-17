@@ -66,12 +66,26 @@ Node* FindMeter(Node* head, int meterId) {
 	return temp;
 }
 
-void UvecajDug(Node** head_ref, int meterId, int noviMesecDug, int stanje) {
+void UvecajDug(Node** head_ref, int meterId, int noviMesecDug) {
 	Node* temp = *head_ref;
 	while (temp != NULL) {
 		if (temp->meter->id == meterId)
 		{
 			temp->meter->debt += noviMesecDug;
+			break;
+		}
+		else
+		{
+			temp = temp->next;
+		}
+	}
+}
+
+void SetajTrenutnoStanje(Node** head_ref, int meterId, int stanje) {
+	Node* temp = *head_ref;
+	while (temp != NULL) {
+		if (temp->meter->id == meterId)
+		{
 			temp->meter->lastMonth = stanje;
 			break;
 		}

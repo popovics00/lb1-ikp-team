@@ -30,7 +30,7 @@ int main()
 	//pravljenje soketa
 	SOCKET serverSocket = SetListenSocket(PORT);
 	SOCKET workerSocket = SetListenSocket(PORTWorker);
-
+	InitializeCriticalSection(&cs);
 	//osluskuje na 1 soketu i registruje nove metere u red metera
 	DWORD komunikacijaSaCuvanjemURedId;
 	HANDLE komunikacijaSaCuvanjemURed = CreateThread(NULL,

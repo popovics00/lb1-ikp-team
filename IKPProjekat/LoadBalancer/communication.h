@@ -1,6 +1,7 @@
 ﻿#define BUFLEN 1024	//max duzina buffera
 #define INITIAL_CAPACITY_BUFFER 1000
-
+#define HAVE_STRUCT_TIMESPEC
+#include <pthread.h>
 #include <ws2tcpip.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,6 +15,7 @@ Queue* primaryQueue = NULL; //ring buffer zahtev
 int globalIdClient = 0;
 unsigned long nonBlockingMode = 1;
 unsigned long BlockingMode = 0;
+CRITICAL_SECTION cs;
 
 void inicijalizacijeReda() {
 	if (primaryQueue == NULL)
@@ -146,7 +148,9 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 						r->meterId = temp->meter->id;
 						r->stanjeTrenutno = number;
 						r->stanjeStaro = temp->meter->lastMonth;
+						SetajTrenutnoStanje(&headMetersList, temp->meter->id, number);
 						enqueue(&primaryQueue, r);
+						ispisiRacune(primaryQueue);
 						break;
 					}
 					temp = temp->next;
@@ -238,13 +242,14 @@ DWORD WINAPI WorkWithSockets(void* vargp) {
 				0,
 				&threadId
 			);
-
 			printf(
 				"\n---------------------------\n\tBrojilo[%d]\nid: %d\nip Address: %s\nport: %d\nthreadId:%d \n\tje prihvaceno\t\n---------------------------\n"
 				, newMeter->id, newMeter->id, newMeter->ipAdr, newMeter->port, threadId
 			);
 
 			AddAtEnd(&headMetersList, newMeter);	//dodaj meter na kraj liste
+
+
 		}
 	} while (1);
 }
@@ -257,7 +262,9 @@ funkciju UvecajDug koja izmeni meter i oslobodi workera. Tu se ta nit, završava
 
 DWORD WINAPI ObradaRacuna(void* vargp) {
 	Worker* worker = (Worker*)vargp;
+	EnterCriticalSection(&cs);
 	Racun temp = dequeue(&primaryQueue);
+	LeaveCriticalSection(&cs);
 	char str[BUFLEN];
 	//formatiranje poruke za slanje METER ID/STANJE STARO/STANJE NOVO
 	sprintf(str, "%d/%d/%d",temp.meterId, temp.stanjeStaro, temp.stanjeTrenutno);
@@ -278,7 +285,7 @@ DWORD WINAPI ObradaRacuna(void* vargp) {
 			ptr = strtok(NULL, "/");
 			int novoDugovanje = atoi(ptr);
 			//printf("\n \t id %d dug novi %d", id, novoDugovanje);
-			UvecajDug(&headMetersList,id, novoDugovanje, temp.stanjeTrenutno);	//menjamo metera
+			UvecajDug(&headMetersList,id, novoDugovanje);	//menjamo metera
 			worker->zauzet = false;
 		}
 		return;
@@ -296,14 +303,16 @@ void SlanjeSoketima() {
 	int brojWorkera = 0;
 	Worker* worker = NULL;
 	while (true) {
+		Sleep(1000);
 		brojWorkera = IzbrojWorkere(headWorkerList);
 		printf("\nBroj workera: %d \tBroj neobradjenih racuna: %d",brojWorkera, primaryQueue->size);
 		if (primaryQueue->size > 0 && brojWorkera > 0) {
+			//EnterCriticalSection(&cs);
 			worker = VratiSlobodnogWorkera(headWorkerList);
-
+			//LeaveCriticalSection(&cs);
+			//ispisiRacune(primaryQueue);
 			if (worker == NULL) {
 				printf("\nNema slobodnog workera");
-				Sleep(1000);
 				continue;
 			}
 			else {

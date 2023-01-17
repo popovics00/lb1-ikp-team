@@ -1,0 +1,13 @@
+﻿  main.c
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(75,10): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(143,14): warning C4129: 'M': unrecognized character escape sequence
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(175,36): warning C4244: 'function': conversion from 'SOCKET' to 'int', possible loss of data
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(291,3): warning C4033: 'ObradaRacuna' must return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(275,9): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(330,10): warning C4098: 'SlanjeSoketima': 'void' function returning a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(89): warning C4715: 'WorkWithSocketsWorker': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(255): warning C4715: 'WorkWithSockets': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(294): warning C4715: 'ObradaRacuna': not all control paths return a value
+main.obj : error LNK2019: unresolved external symbol __imp_pthread_mutex_lock referenced in function ObradaRacuna
+main.obj : error LNK2019: unresolved external symbol __imp_pthread_mutex_unlock referenced in function ObradaRacuna
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\x64\Debug\LoadBalancer.exe : fatal error LNK1120: 2 unresolved externals

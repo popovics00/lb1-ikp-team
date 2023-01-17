@@ -21,6 +21,7 @@ void SetNonblocking(SOCKET* socket) {
 }
 
 int GenerateRandomNumber(int minNumber) {
+	srand(time(0));
 	return (rand() % ((minNumber+500) - minNumber + 1)) + minNumber;
 }
 

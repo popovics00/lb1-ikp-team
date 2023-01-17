@@ -123,7 +123,7 @@ int main(void)
 				iResult = recv(s, recvbuf, BUFLEN, 0);
 				recvbuf[iResult] = '\0';
 
-				printf("\n%s", recvbuf);
+				//printf("\n%s", recvbuf);
 				char* ptr = strtok(recvbuf, "/");
 				char* id = ptr;
 				ptr = strtok(NULL, "/");

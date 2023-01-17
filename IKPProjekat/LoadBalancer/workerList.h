@@ -71,6 +71,7 @@ Worker* VratiSlobodnogWorkera(NodeW* head) {
 	while (temp != NULL) {
 		if (temp->worker->zauzet == false)
 		{
+			Sleep(3000);
 			return temp->worker;
 		}
 		if (temp->next == NULL)

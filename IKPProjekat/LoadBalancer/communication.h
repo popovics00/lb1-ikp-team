@@ -139,7 +139,8 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 				while (temp != NULL) {
 					if (socket == temp->meter->acceptedSocket) {
 						recvbuf[iResult] = '\0';
-						printf("\n\nPrimljen izvestaj od:\nThread id = %d.\Meter id: %d.\nPort: %d\nIP adresa: %s.\nDuzina poruke: %d \nPotrosnja za ovaj mesec: %s \n", GetCurrentThreadId(), temp->meter->id, temp->meter->port, temp->meter->ipAdr, iResult, recvbuf);
+						//PORUKA
+						//printf("\n\nPrimljen izvestaj od:\nThread id = %d.\Meter id: %d.\nPort: %d\nIP adresa: %s.\nDuzina poruke: %d \nPotrosnja za ovaj mesec: %s \n", GetCurrentThreadId(), temp->meter->id, temp->meter->port, temp->meter->ipAdr, iResult, recvbuf);
 						int number = atoi(recvbuf);
 						//printf("\nStatus prosli mesec -> Stats ovaj mesec: %d->%d\n\n", temp->meter->lastMonth, number);
 
@@ -150,7 +151,7 @@ DWORD WINAPI PrijemDaljihPoruka(void* vargp) {
 						r->stanjeStaro = temp->meter->lastMonth;
 						SetajTrenutnoStanje(&headMetersList, temp->meter->id, number);
 						enqueue(&primaryQueue, r);
-						ispisiRacune(primaryQueue);
+						//ispisiRacune(primaryQueue);
 						break;
 					}
 					temp = temp->next;
@@ -273,18 +274,17 @@ DWORD WINAPI ObradaRacuna(void* vargp) {
 	{
 		worker->zauzet = true;
 		DWORD threadId;
-		printf("\nObrada racuna pre slanja:\n\tRacun za slanje je (meterid/starostanje/trenutno stanje): %s", str);
+		//printf("\nObrada racuna pre slanja:\n\tRacun za slanje je (meterid/starostanje/trenutno stanje): %s", str);
 		int iResult = send(worker->acceptedSocket, str, (int)strlen(str), 0);
 		Sleep(2000);
 		iResult = recv(worker->acceptedSocket, str, BUFLEN, 0);
 		str[iResult] = '\0';
-		printf("\nObrada racuna dobijen izvestaj:\n\tRacun primljen je (meterid/racun): %s", str);
+		//printf("\nObrada racuna dobijen izvestaj:\n\tRacun primljen je (meterid/racun): %s", str);
 		if (iResult>1) {
 			char* ptr = strtok(str, "/");	//parsiramo poruku
 			int id = atoi(ptr);
 			ptr = strtok(NULL, "/");
 			int novoDugovanje = atoi(ptr);
-			//printf("\n \t id %d dug novi %d", id, novoDugovanje);
 			UvecajDug(&headMetersList,id, novoDugovanje);	//menjamo metera
 			worker->zauzet = false;
 		}
@@ -299,7 +299,7 @@ Ukoliko ih imamo vršimo preuzimanje računa iz buffera  i slanje prvom slobodno
 koji poziva funkciju ObradaRačuna(worker).
 */
 
-void SlanjeSoketima() {
+DWORD WINAPI SlanjeSoketima(void* vargp) {
 	int brojWorkera = 0;
 	Worker* worker = NULL;
 	while (true) {
@@ -307,9 +307,7 @@ void SlanjeSoketima() {
 		brojWorkera = IzbrojWorkere(headWorkerList);
 		printf("\nBroj workera: %d \tBroj neobradjenih racuna: %d",brojWorkera, primaryQueue->size);
 		if (primaryQueue->size > 0 && brojWorkera > 0) {
-			//EnterCriticalSection(&cs);
 			worker = VratiSlobodnogWorkera(headWorkerList);
-			//LeaveCriticalSection(&cs);
 			//ispisiRacune(primaryQueue);
 			if (worker == NULL) {
 				printf("\nNema slobodnog workera");

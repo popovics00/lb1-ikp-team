@@ -1,11 +1,13 @@
 ﻿  main.c
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\RingBuffer.h(38,10): warning C4129: 'S': unrecognized character escape sequence
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\RingBuffer.h(37,10): warning C4129: 'S': unrecognized character escape sequence
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\workerList.h(89,10): warning C4473: 'printf' : not enough arguments passed for format string
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\workerList.h(89,10): message : placeholders and their parameters expect 3 variadic arguments, but 2 were provided
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\workerList.h(89,10): message : the missing variadic argument 3 is required by format string '%d'
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(75,10): warning C4101: 'threadId': unreferenced local variable
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(142,14): warning C4129: 'M': unrecognized character escape sequence
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(291,3): warning C4033: 'ObradaRacuna' must return a value
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(275,9): warning C4101: 'threadId': unreferenced local variable
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(331,10): warning C4098: 'SlanjeSoketima': 'void' function returning a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(276,9): warning C4101: 'threadId': unreferenced local variable
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\main.c(87,25): warning C4133: 'function': incompatible types - from 'NodeW *' to 'Node *'
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communicationWorker.h(89): warning C4715: 'WorkWithSocketsWorker': not all control paths return a value
-C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(255): warning C4715: 'WorkWithSockets': not all control paths return a value
+C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(256): warning C4715: 'WorkWithSockets': not all control paths return a value
 C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\LoadBalancer\communication.h(294): warning C4715: 'ObradaRacuna': not all control paths return a value
   LoadBalancer.vcxproj -> C:\Users\stefa\Desktop\lb1-ikp-team\IKPProjekat\Debug\LoadBalancer.exe

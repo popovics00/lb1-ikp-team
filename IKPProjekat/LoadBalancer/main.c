@@ -52,21 +52,41 @@ int main()
 	);
 
 	//kupimo poruke i rasporedjujemo ih
-	SlanjeSoketima();
+	//SlanjeSoketima();
+	DWORD slanjeRacunaIzRingaId;
+	HANDLE slanjeRacunaIzRinga = CreateThread(NULL,
+		0,
+		SlanjeSoketima,
+		0,
+		0,
+		&slanjeRacunaIzRingaId
+	);
 
 
 	//CISTO DA SE NE UGASI PROGRAM
 	int temp = 0;
 	while (1) {
+		printf("\n\nMENU");
+		printf("\n\t1) Ispisi workere");
+		printf("\n\t2) Ispisi metere");
+		printf("\n\t3) Ispisi racune na cekanju");
+		printf("\n\t0) Gasi LB");
 		scanf("%d", &temp);
-		printf("%d", temp);
 		if (temp == 0)
 			break;
+		else if (temp == 1)
+			IspisiListuWorker(headWorkerList);
+		else if (temp == 2)
+			IspisiListu(headMetersList);
+		else if(temp==3)
+			ispisiRacune(primaryQueue);
 	}
 
 	//zatvaranje niti i prazni zauzeto
 	FreeList(headMetersList); // ciscenje liste metera
+	FreeList(headWorkerList); // ciscenje liste workera
 	CloseHandle(komunikacijaSaCuvanjemURed);
 	CloseHandle(komunikacijaSaCuvanjemWorkeraURed);
+	CloseHandle(slanjeRacunaIzRinga);
 	return 0;
 }

@@ -84,8 +84,9 @@ Worker* VratiSlobodnogWorkera(NodeW* head) {
 
 void IspisiListuWorker(NodeW* head) {
 	NodeW* temp = head;
+	printf("\n\nLISTA WORKERA:");
 	while (temp != NULL) {
-		//printf("%d %d %d\n", temp->worker->id, temp->worker., temp->worker->debt);
+		printf("\n\tWorker-%d na portu %d %d", temp->worker->id, temp->worker->port);
 		if (temp->next == NULL)
 			break;
 		temp = temp->next;

@@ -21,7 +21,7 @@ int enqueue(Queue** q, Racun* data)
 	queue->rear = (queue->rear + 1)	% queue->capacity;
 	*(queue->racun + queue->rear) = *data;
 	queue->size = queue->size + 1;
-	printf("\n%d-%d enqueued to queue", (queue->racun + queue->rear)->meterId, (queue->racun+queue->rear)->stanjeTrenutno);
+	printf("\n\t%d-%d je dodato u red", (queue->racun + queue->rear)->meterId, (queue->racun+queue->rear)->stanjeTrenutno);
 	return true;
 }
 
@@ -29,13 +29,12 @@ Racun dequeue(Queue** q)
 {
 	Queue* queue = *q;
 
-	//printf("\n\tVelicina reda %d", queue->size);
 	if(queue->size!=0)
 	{
 		queue->front = (queue->front + 1) % queue->capacity;
 		queue->size = queue->size - 1;
 		struct Racun item = *(queue->racun + queue->front);
-		printf("\n\n\t\Skinuto sa reda %d %d",item.meterId, item.stanjeTrenutno);
+		printf("\n\t\Skinuto sa reda %d %d",item.meterId, item.stanjeTrenutno);
 		return item;
 	}
 	struct Racun r;
@@ -47,12 +46,12 @@ Racun dequeue(Queue** q)
 void ispisiRacune(Queue* q)
 {
 	Queue* queue = q;
-
+	printf("\n\nSPISAK RACUNA:");
 	if (queue->size != 0)
 	{
 		for (int i = q->front+1; i <= queue->rear; i++) {
 			struct Racun item = *(queue->racun + i);
-			printf("\n\tRING - %d %d %d",item.meterId, item.stanjeStaro, item.stanjeTrenutno);
+			printf("\n\t Meter-%d  pre: %d  posle: %d",item.meterId, item.stanjeStaro, item.stanjeTrenutno);
 		}
 	}
 }

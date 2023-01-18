@@ -98,8 +98,9 @@ void SetajTrenutnoStanje(Node** head_ref, int meterId, int stanje) {
 
 void IspisiListu(Node* head) {
 	Node* temp = head;
+	printf("\n\nLISTA METERA");
 	while (temp != NULL) {
-		printf("%d %d %d\n",temp->meter->id, temp->meter->lastMonth,temp->meter->debt);
+		printf("\n\tMeter-%d sa stanjem %d sa dugom od %d",temp->meter->id, temp->meter->lastMonth,temp->meter->debt);
 		if (temp->next == NULL)
 			break;
 		temp = temp->next;
